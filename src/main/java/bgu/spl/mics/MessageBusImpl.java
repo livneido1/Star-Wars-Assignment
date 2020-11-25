@@ -38,7 +38,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public void register(MicroService m) {
+		public void register(MicroService m) {
 		
 	}
 
