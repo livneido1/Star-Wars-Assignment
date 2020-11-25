@@ -94,6 +94,8 @@ public class MassageBusImplTest {
         messageBus.register(c3po);
         AttackEvent attackEvent = new AttackEvent();
         messageBus.subscribeEvent(attackEvent.getClass(),hanSolo);
+
+
         messageBus.subscribeEvent(attackEvent.getClass(),c3po);
 
 
