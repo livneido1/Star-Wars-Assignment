@@ -18,7 +18,16 @@ public class FutureTest {
 
     @BeforeEach
     public void setUp(){
-        future = new Future<>();
+        future = new Future<String>();
+    }
+
+    @Test
+    public void testGet()
+    {
+        assertFalse(future.isDone());
+        future.resolve("");
+        future.get();
+        assertTrue(future.isDone());
     }
 
     @Test
@@ -27,5 +36,23 @@ public class FutureTest {
         future.resolve(str);
         assertTrue(future.isDone());
         assertTrue(str.equals(future.get()));
+    }
+
+    @Test
+    public void testIsDone(){
+        String str = "someResult";
+        assertFalse(future.isDone());
+        future.resolve(str);
+        assertTrue(future.isDone());
+    }
+
+    @Test
+    public void testGetWithTimeOut() throws InterruptedException
+    {
+        assertFalse(future.isDone());
+        future.get(100,TimeUnit.MILLISECONDS);
+        assertFalse(future.isDone());
+        future.resolve("foo");
+        assertEquals(future.get(100,TimeUnit.MILLISECONDS),"foo");
     }
 }

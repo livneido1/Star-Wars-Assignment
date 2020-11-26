@@ -3,6 +3,8 @@ package bgu.spl.mics;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.services.*;
+import jdk.jfr.Event;
+import jdk.vm.ci.code.site.Call;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sun.swing.SwingUtilities2;
@@ -42,19 +44,26 @@ public class MassageBusImplTest {
         assertTrue(temp ==  messageBus);
     }
 
-  /*  @Test
+    @Test
     public void registerTest(){
-        try {
-            messageBus.register(hanSolo);
-            messageBus.register(c3po);
-            hanSolo.
 
 
-        }catch ();
+        MicroService temp  =  new MicroService("m1") {
+            int check = 0;
+            @Override
+            protected void initialize() {
+                AttackEvent attackEvent = new AttackEvent();
+                MessageBusImpl messageBus2= new MessageBusImpl();
+                messageBus2.register(this);
+            }
+
+            Callback <AttackEvent> callback =  (Message) -> {check++;};
+
+        };
 
 
 
-    }*/
+    }
 
     @Test
     public void sendBroadCastTest(){
@@ -84,19 +93,24 @@ public class MassageBusImplTest {
     @Test
     public void subscribeEventTest(){
 
+        AttackEvent attackEvent = new AttackEvent();
+
         MicroService temp  =  new MicroService("m1") {
             @Override
             protected void initialize() {
-
+                MessageBusImpl messageBus2= new MessageBusImpl();
+                messageBus2.register(this);
+                messageBus2.subscribeEvent(attackEvent.getClass(),this);
             }
+
+
         };
-        messageBus.register(hanSolo);
-        messageBus.register(c3po);
-        AttackEvent attackEvent = new AttackEvent();
-        messageBus.subscribeEvent(attackEvent.getClass(),hanSolo);
+
+        AttackEvent attackEvent1  =  new AttackEvent();
+        messageBus.sendEvent(attackEvent1);
+        Callback <Event> tempCallback = (Message) -> System.out.println("hi");
 
 
-        messageBus.subscribeEvent(attackEvent.getClass(),c3po);
 
 
 
