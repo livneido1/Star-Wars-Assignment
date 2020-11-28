@@ -26,7 +26,6 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		
 	}
 
 	@Override
@@ -43,8 +42,6 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 		public void register(MicroService m) {
-		List<Event> eventQueue =  new LinkedList<Event>();
-		microservices_queues.add(eventQueue);
 
 		
 	}

@@ -1,8 +1,10 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.FinishBroadCast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.services.*;
+import jdk.internal.net.http.common.ImmutableExtendedSSLSession;
 import jdk.jfr.Event;
 import jdk.vm.ci.code.site.Call;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,32 +12,29 @@ import org.junit.jupiter.api.Test;
 import sun.swing.SwingUtilities2;
 
 import java.math.MathContext;
+import java.util.LinkedList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class MassageBusImplTest {
     private MessageBusImpl messageBus;
-    private MicroService hanSolo;
-    private MicroService c3po;
-    private MicroService leia ;
-    private MicroService r2d2 ;
-    private MicroService lando;
+    private HanSoloMicroservice hanSolo;
+    private C3POMicroservice c3po;
+    private LeiaMicroservice leia;
+
 
     @BeforeEach
     public void setMessageBus(){
         messageBus = new MessageBusImpl();
-        hanSolo =  new HanSoloMicroservice();
-        c3po =  new C3POMicroservice();
-        Attack[] attacks =  new Attack[3];
-        leia =  new LeiaMicroservice(attacks );
-        r2d2 =  new R2D2Microservice(2000);
-        lando =  new LandoMicroservice(2000);
+        hanSolo = new HanSoloMicroservice();
+        c3po = new C3POMicroservice();
 
-
+        leia =  new LeiaMicroservice(new Attack[3]);
     }
 
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TESTS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     @Test
     public void singeltonCheck(){
@@ -44,79 +43,95 @@ public class MassageBusImplTest {
         assertTrue(temp ==  messageBus);
     }
 
+
+    /**
+     * this method tests the following methods in the MessageBusImpl
+     * 1. register
+     * 2. subscribeEvent
+     * 3. sendEvent
+     * 4. awaitMessage
+     *
+     * NOTICE!! the register method should be called in the constructor of the Microservices therefor
+     * will be tested but unseen in the test code
+     * NOTICE! this method does not test the round robin manner as well as the whole MicroService Objects
+     */
     @Test
-    public void registerTest(){
+    public  void EventTests(){
 
 
-        MicroService temp  =  new MicroService("m1") {
-            int check = 0;
-            @Override
-            protected void initialize() {
-                AttackEvent attackEvent = new AttackEvent();
-                MessageBusImpl messageBus2= new MessageBusImpl();
-                messageBus2.register(this);
-            }
+        AttackEvent attackEvent =  new AttackEvent();
+        Callback  emptyCallBack = (Message) -> {};
 
-            Callback <AttackEvent> callback =  (Message) -> {check++;};
+        hanSolo.subscribeEvent(attackEvent.getClass(),emptyCallBack);
+        leia.sendEvent(attackEvent);
+        Message e2 = null;
+        try {
+             e2 = messageBus.awaitMessage(hanSolo);
+        }
+        catch (Exception e){};
 
-        };
+
+        assertTrue(e2 == attackEvent);
+
+
+    }
+    /**
+     * this method tests the following methods in the MessageBusImpl
+     * 1. register
+     * 2. subscribeBroadCast
+     * 3. sendBroadCast
+     * 4. awaitMessage
+     *
+     * NOTICE! this method does not test the round robin manner as well as the whole MicroService Objects
+     */
+    @Test
+    public void broadcastTests(){
+
+
+        Broadcast broadcast =  new FinishBroadCast();
+        Callback emptyCallBack = (Message) -> {};
+
+        c3po.subscribeBroadcast(broadcast.getClass(),emptyCallBack);
+        hanSolo.subscribeBroadcast(broadcast.getClass(),emptyCallBack);
+        leia.sendBroadcast(broadcast);
+        Message e2 = null;
+        Message e3 =  null;
+        try {
+            e2 = messageBus.awaitMessage(c3po);
+            e3 =  messageBus.awaitMessage(hanSolo);
+        }
+        catch (Exception e){};
+
+
+        assertTrue(e2 == broadcast);
+        assertTrue(e3 ==  broadcast);
 
 
 
     }
 
+
+
     @Test
-    public void sendBroadCastTest(){
-        messageBus.register(hanSolo);
-        messageBus.register(c3po);
+    public void completeTest() {
         AttackEvent attackEvent = new AttackEvent();
+        Callback  emptyCallBack = (Message) -> {};
+
+        hanSolo.subscribeEvent(attackEvent.getClass(),emptyCallBack);
+        Future <Boolean>  future  = leia.sendEvent(attackEvent);
+        Message e2 = null;
+        try {
+            e2 = messageBus.awaitMessage(hanSolo);
+        }
+        catch (Exception e){};
 
 
-        Broadcast broadcast =  new Broadcast() {
-            public String message = "hi";
-
-        };
-
-
-        Broadcast broadcast2 =  new Broadcast() {
-            public String message = "no good";
-
-        };
-        messageBus.subscribeBroadcast(broadcast.getClass(),hanSolo);
-        messageBus.subscribeBroadcast(broadcast.getClass(),c3po);
-
-        messageBus.sendBroadcast(broadcast);
-
-
-    }
-
-    @Test
-    public void subscribeEventTest(){
-
-        AttackEvent attackEvent = new AttackEvent();
-
-        MicroService temp  =  new MicroService("m1") {
-            @Override
-            protected void initialize() {
-                MessageBusImpl messageBus2= new MessageBusImpl();
-                messageBus2.register(this);
-                messageBus2.subscribeEvent(attackEvent.getClass(),this);
-            }
-
-
-        };
-
-        AttackEvent attackEvent1  =  new AttackEvent();
-        messageBus.sendEvent(attackEvent1);
-        Callback <Event> tempCallback = (Message) -> System.out.println("hi");
-
-
+        messageBus.complete(attackEvent, true);
+        assertTrue(future.get());
 
 
 
 
     }
-
-
 
 }
