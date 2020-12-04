@@ -1,19 +1,11 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.FinishBroadCast;
+import bgu.spl.mics.application.messages.FinishBroadcast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.services.*;
-import jdk.internal.net.http.common.ImmutableExtendedSSLSession;
-import jdk.jfr.Event;
-import jdk.vm.ci.code.site.Call;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sun.swing.SwingUtilities2;
-
-import java.math.MathContext;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -88,7 +80,7 @@ public class MassageBusImplTest {
     public void broadcastTests(){
 
 
-        Broadcast broadcast =  new FinishBroadCast();
+        Broadcast broadcast =  new FinishBroadcast();
         Callback emptyCallBack = (Message) -> {};
 
         c3po.subscribeBroadcast(broadcast.getClass(),emptyCallBack);
@@ -109,8 +101,6 @@ public class MassageBusImplTest {
 
 
     }
-
-
 
     @Test
     public void completeTest() {
