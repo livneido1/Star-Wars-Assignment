@@ -1,8 +1,10 @@
 package bgu.spl.mics.application.services;
+import bgu.spl.mics.Callback;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
-import bgu.spl.mics.application.messages.TerminateBroadcast;
+//import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.messages.FinishBroadcast;
 import bgu.spl.mics.application.passiveObjects.Diary;
 
 /**
@@ -15,12 +17,24 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  */
 public class R2D2Microservice extends MicroService {
 
+    long duration;
     public R2D2Microservice(long duration) {
         super("R2D2");
+        this.duration=duration;
     }
 
     @Override
     protected void initialize() {
-
+        subscribeEvent(DeactivationEvent.class,deactivationEventCallback);
+        subscribeBroadcast(FinishBroadcast.class,finishBroadcastCallback);
     }
+
+    public long getDuration() {
+        return duration;
+    }
+    Callback<DeactivationEvent> deactivationEventCallback=(DeactivationEvent deactivationEvent)->{
+        Thread.currentThread().sleep(duration);
+        this.complete(deactivationEvent,true);
+    };
+    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
 }
