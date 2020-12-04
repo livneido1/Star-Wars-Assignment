@@ -1,9 +1,9 @@
 package bgu.spl.mics;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Vector;
+import bgu.spl.mics.application.QueuesMap;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -11,7 +11,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
+	ConcurrentHashMap<MicroService,Message> queuesMap;
 
+	
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
@@ -55,4 +57,5 @@ public class MessageBusImpl implements MessageBus {
 		
 		return null;
 	}
+
 }
