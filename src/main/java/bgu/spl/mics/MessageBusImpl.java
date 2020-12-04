@@ -54,7 +54,10 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
-		
+		return null;
+	}
+	public static MessageBusImpl getInstance()
+	{
 		return null;
 	}
 
