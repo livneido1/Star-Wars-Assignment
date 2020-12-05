@@ -86,12 +86,15 @@ public interface MessageBus {
      * The method should throw the {@link IllegalStateException} in the case
      * where {@code m} was never registered.
      * <p>
+     *
      * @param m The micro-service requesting to take a message from its message
      *          queue.
      * @return The next message in the {@code m}'s queue (blocking).
      * @throws InterruptedException if interrupted while waiting for a message
      *                              to became available.
      */
-    Message awaitMessage(MicroService m) throws InterruptedException;
-    
+    default Message awaitMessage(MicroService m) throws InterruptedException {
+        return null;
+    }
+
 }

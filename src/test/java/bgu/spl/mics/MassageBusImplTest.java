@@ -1,7 +1,6 @@
 package bgu.spl.mics;
 
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.FinishBroadcast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.services.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,7 @@ public class MassageBusImplTest {
 
     @BeforeEach
     public void setMessageBus(){
-        messageBus = new MessageBusImpl();
+        messageBus = MessageBusImpl.getInstance();
         hanSolo = new HanSoloMicroservice();
         c3po = new C3POMicroservice();
 
@@ -30,7 +29,7 @@ public class MassageBusImplTest {
 
     @Test
     public void singeltonCheck(){
-        MessageBusImpl  temp  =  new MessageBusImpl();
+        MessageBusImpl  temp  =  MessageBusImpl.getInstance();
 
         assertTrue(temp ==  messageBus);
     }
@@ -117,7 +116,9 @@ public class MassageBusImplTest {
 
 
         messageBus.complete(attackEvent, true);
-        assertTrue(future.get());
+        try {
+            assertTrue(future.get());
+        }catch (InterruptedException e){}
 
 
 

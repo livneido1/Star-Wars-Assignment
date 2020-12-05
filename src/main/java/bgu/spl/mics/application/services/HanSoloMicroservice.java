@@ -28,7 +28,6 @@ public class HanSoloMicroservice extends MicroService{
     protected void initialize() {
         subscribeEvent(AttackEvent.class,attackCallback);
         subscribeBroadcast(FinishBroadcast.class,finishBroadcastCallback);
-        subscribeBroadcast(allAttacksHandledBroadcast.class,allAttacksHandledBroadcastCallback);
     }
 
 
@@ -37,10 +36,6 @@ public class HanSoloMicroservice extends MicroService{
         this.complete(attackEvent,true);
     };
     Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
-    Callback <allAttacksHandledBroadcast> allAttacksHandledBroadcastCallback=(allAttacksHandledBroadcast allAttacksHandledBroadcast)->{
-        MessageBusImpl messageBus=new MessageBusImpl();
-        messageBus.getInstance();
-        messageBus.wait();
-    };
+
 
 }

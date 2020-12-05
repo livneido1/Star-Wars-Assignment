@@ -1,64 +1,137 @@
 package bgu.spl.mics;
-import bgu.spl.mics.application.QueuesMap;
 
+import bgu.spl.mics.application.passiveObjects.LinkedMassage;
+import bgu.spl.mics.application.passiveObjects.MessageQueue;
+import jdk.nashorn.internal.ir.CallNode;
+import bgu.spl.mics.application.messages.*;
+
+import java.rmi.server.RMIClassLoader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
-	ConcurrentHashMap<MicroService,Message> queuesMap;
+	private HashMap <Class<? extends MicroService>, MessageQueue> queuesMap; // this queue holds the messages for the Microservices
+	private HashMap<Class<? extends Message>,LinkedList<MicroService>> robinManner;
+	private HashMap<Event,Future > eventMap;
+	private static  MessageBusImpl instance ;
 
-	
+	private MessageBusImpl(){
+		queuesMap =  new HashMap<>();
+		robinManner =  new HashMap<>();
+		eventMap =  new HashMap<>();
 
-	@Override
-	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		
 	}
 
 	@Override
-	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		
+	public synchronized <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+		if (robinManner.containsKey(type)){
+			LinkedList<MicroService> list = robinManner.get((type));
+			list.add(m);
+		}
+		else{
+			LinkedList<MicroService> microServiceLinkedList = new LinkedList<>();
+			microServiceLinkedList.add(m);
+			robinManner.put(type,microServiceLinkedList);
+		}
+		if (!queuesMap.containsKey(m.getClass())){
+			MessageQueue messageQueue = new MessageQueue();
+			queuesMap.put(m.getClass(),messageQueue) ;
+		}
+
+
+	}
+
+	@Override
+	public synchronized void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+		if (robinManner.containsKey(type)){
+			LinkedList<MicroService> list = robinManner.get((type));
+			list.add(m);
+		}
+		else{
+			LinkedList<MicroService> microServiceLinkedList = new LinkedList<>();
+			microServiceLinkedList.add(m);
+			robinManner.put(type,microServiceLinkedList);
+		}
+		if (!queuesMap.containsKey(m.getClass())){
+			MessageQueue messageQueue = new MessageQueue();
+			queuesMap.put(m.getClass(),messageQueue) ;
+		}
     }
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
+		eventMap.get(e).resolve(result);
+
 	}
 
 	@Override
-	public void sendBroadcast(Broadcast b) {
-		
+	public synchronized void sendBroadcast(Broadcast b) {
+		LinkedList<MicroService> list =   robinManner.get(b.getClass());
+		for (MicroService microService: list){
+			queuesMap.get(microService.getClass()).enqueue(b);
+		}
 	}
 
 	
 	@Override
-	public <T> Future<T> sendEvent(Event<T> e) {
-		
-        return null;
+	public synchronized  <T> Future<T> sendEvent(Event<T> e) {
+		LinkedList<MicroService> list =   robinManner.get(e.getClass());
+		MicroService first =  list.removeFirst();
+		Future<T> future =  new Future<>();
+		MessageQueue queue =  queuesMap.get(first.getClass());
+		queue.enqueue(e);
+		queue.notifyAll();
+		list.add(first);
+		eventMap.put(e,future);
+		return future;
 	}
 
 	@Override
 		public void register(MicroService m) {
+		MessageQueue messageQueue =  new MessageQueue();
+		queuesMap.put(m.getClass(), messageQueue);
 
-		
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		
+		queuesMap.remove(m.getClass());
+
+		// Need to check whether we need it or not
+		for(Map.Entry< Class<? extends  Message> ,LinkedList<MicroService>> entry : robinManner.entrySet()) {
+			Class<? extends Message> key = entry.getKey();
+			LinkedList<MicroService> value = entry.getValue();
+			if (value.contains(m)){
+				value.remove(m);
+			}
+		}
+
+
 	}
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
-		return null;
+		MessageQueue queue = queuesMap.get(m.getClass());
+		Message message =  queue.dequeue().getMessage();
+		while (message == null){
+			queue.wait();
+			message = queue.dequeue().getMessage();
+		}
+		return message;
+
 	}
-	public static MessageBusImpl getInstance()
+
+
+	public synchronized static MessageBusImpl getInstance()
 	{
-		return null;
+		if (instance == null){
+			instance = new MessageBusImpl();
+		}
+		return instance;
 	}
 
 }

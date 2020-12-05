@@ -4,6 +4,7 @@ import java.util.List;
 
 import bgu.spl.mics.Callback;
 import bgu.spl.mics.Future;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
@@ -53,8 +54,7 @@ public class LeiaMicroservice extends MicroService {
                 catch (InterruptedException e){}
         }
 
-    	allAttacksHandledBroadcast allAttacksHandledBroadcast=new allAttacksHandledBroadcast();
-    	sendBroadcast(allAttacksHandledBroadcast);
+
         DeactivationEvent deactivationEvent=new DeactivationEvent();
         Future deactiveFuture=sendEvent(deactivationEvent);
         try{
@@ -67,12 +67,12 @@ public class LeiaMicroservice extends MicroService {
             bombFuture.get();
         }
         catch (InterruptedException e){}
+        MessageBusImpl.getInstance().notifyAll(); // this will release the R2D2 and C3PO from sleep.
         FinishBroadcast finishBroadcast= new FinishBroadcast();
         sendBroadcast(finishBroadcast);
         this.terminate();
 
     }
-   // Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
 
 
 }

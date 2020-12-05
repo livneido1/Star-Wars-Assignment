@@ -1,5 +1,6 @@
 package bgu.spl.mics.application;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.Message;
 
 import java.util.LinkedList;
@@ -8,6 +9,7 @@ public class LinkedMessage {
     private Message message;
     private LinkedMessage next;
     private LinkedMessage prev;
+    private Future<?> future;
 
     public LinkedMessage(Message message, LinkedMessage next, LinkedMessage prev){
         this.message = message;
@@ -37,5 +39,6 @@ public class LinkedMessage {
     public LinkedMessage getPrev() {
         return prev;
     }
+
 
 }
