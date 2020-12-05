@@ -12,7 +12,7 @@ public class EwokTest {
 
 
     @BeforeEach
-    public void setEwok(){ewok = new Ewok();}
+    public void setEwok(){ewok = new Ewok(1);}
 
 
     @Test

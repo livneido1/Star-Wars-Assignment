@@ -36,5 +36,6 @@ public class R2D2Microservice extends MicroService {
         Thread.currentThread().sleep(duration);
         this.complete(deactivationEvent,true);
     };
-    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
+    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{
+        this.terminate();};
 }

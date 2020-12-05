@@ -26,7 +26,9 @@ public class FutureTest {
     {
         assertFalse(future.isDone());
         future.resolve("");
-        future.get();
+        try {
+            future.get();
+        }catch (InterruptedException e){}
         assertTrue(future.isDone());
     }
 
@@ -35,7 +37,9 @@ public class FutureTest {
         String str = "someResult";
         future.resolve(str);
         assertTrue(future.isDone());
-        assertTrue(str.equals(future.get()));
+        try {
+            assertTrue(str.equals(future.get()));
+        }catch (InterruptedException e){}
     }
 
     @Test

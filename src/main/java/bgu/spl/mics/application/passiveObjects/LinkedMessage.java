@@ -1,9 +1,7 @@
-package bgu.spl.mics.application;
+package bgu.spl.mics.application.passiveObjects;
 
 import bgu.spl.mics.Future;
 import bgu.spl.mics.Message;
-
-import java.util.LinkedList;
 
 public class LinkedMessage {
     private Message message;

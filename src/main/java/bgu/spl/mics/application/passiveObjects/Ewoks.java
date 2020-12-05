@@ -1,13 +1,8 @@
 package bgu.spl.mics.application.passiveObjects;
 
-import bgu.spl.mics.application.LinkedMessage;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 
 /**
@@ -84,9 +79,11 @@ public class Ewoks {
         return true;
     }
 
-    public synchronized void initialize(List<Ewok> ewoks){
-        for (Ewok ewok : ewoks){
-            ewokMap.put(ewok.getSerialNumber(),ewok);
+    public synchronized void initialize(int ewoks){
+        for (int i =0; i< ewoks; i++){
+            Ewok newEwok =  new Ewok(i);
+
+            ewokMap.put(i,newEwok);
         }
     }
 

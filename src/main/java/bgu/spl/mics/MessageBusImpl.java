@@ -1,11 +1,7 @@
 package bgu.spl.mics;
 
-import bgu.spl.mics.application.passiveObjects.LinkedMassage;
 import bgu.spl.mics.application.passiveObjects.MessageQueue;
-import jdk.nashorn.internal.ir.CallNode;
-import bgu.spl.mics.application.messages.*;
 
-import java.rmi.server.RMIClassLoader;
 import java.util.*;
 
 /**
@@ -98,7 +94,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public void unregister(MicroService m) {
+	public synchronized void  unregister(MicroService m) {
 		queuesMap.remove(m.getClass());
 
 		// Need to check whether we need it or not

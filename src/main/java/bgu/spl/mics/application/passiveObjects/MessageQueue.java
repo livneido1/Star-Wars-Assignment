@@ -1,11 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 
-import bgu.spl.mics.Future;
 import bgu.spl.mics.Message;
-import bgu.spl.mics.application.LinkedMessage;
-import sun.awt.image.ImageWatched;
-
-import java.util.Queue;
 
 public class MessageQueue  {
     LinkedMessage first;

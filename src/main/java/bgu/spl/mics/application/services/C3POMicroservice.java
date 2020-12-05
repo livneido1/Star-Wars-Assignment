@@ -6,6 +6,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 //import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.FinishBroadcast;
+import bgu.spl.mics.application.passiveObjects.Diary;
 
 
 /**
@@ -30,7 +31,10 @@ public class C3POMicroservice extends MicroService {
     }
     Callback<AttackEvent> attackCallback = (AttackEvent attackEvent) -> {
         Thread.currentThread().sleep(attackEvent.getDuration());
-        this.complete(attackEvent,true);};
+        this.complete(attackEvent,true);
+        Diary.getInstance().setTotalAttacks();
+
+    };
     Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
 
 }
