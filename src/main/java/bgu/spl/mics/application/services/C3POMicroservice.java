@@ -32,9 +32,13 @@ public class C3POMicroservice extends MicroService {
     Callback<AttackEvent> attackCallback = (AttackEvent attackEvent) -> {
         Thread.currentThread().sleep(attackEvent.getDuration());
         this.complete(attackEvent,true);
+        Diary.getInstance().setC3PoFinish(System.currentTimeMillis());
         Diary.getInstance().setTotalAttacks();
 
     };
-    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
+    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{
+        this.terminate();
+        Diary.getInstance().setC3POTerminate(System.currentTimeMillis());//TODO: check with IDO
+    };
 
 }

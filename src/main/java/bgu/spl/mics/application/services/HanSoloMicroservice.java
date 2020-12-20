@@ -34,9 +34,11 @@ public class HanSoloMicroservice extends MicroService{
     Callback<AttackEvent> attackCallback = (AttackEvent attackEvent) -> {
         Thread.currentThread().sleep(attackEvent.getDuration());
         this.complete(attackEvent,true);
+        Diary.getInstance().setHanSoloFinish(System.currentTimeMillis());
         Diary.getInstance().setTotalAttacks();
     };
-    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
+    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();
+    Diary.getInstance().setHanSoloTerminate(System.currentTimeMillis());};
 
 
 }

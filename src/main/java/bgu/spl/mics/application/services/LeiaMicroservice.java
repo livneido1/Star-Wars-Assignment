@@ -36,10 +36,7 @@ public class LeiaMicroservice extends MicroService {
     @Override
     protected void initialize()  {
         //subscribeBroadcast(FinishBroadcast.class,finishBroadcastCallback);
-        try {
-            Thread.currentThread().wait(100);
-        }
-        catch (InterruptedException e){}
+
     	for (int i=0;i<attacks.length;i++)
         {
             AttackEvent attackEvent=new AttackEvent(attacks[i]);
@@ -71,6 +68,7 @@ public class LeiaMicroservice extends MicroService {
         FinishBroadcast finishBroadcast= new FinishBroadcast();
         sendBroadcast(finishBroadcast);
         this.terminate();
+        Diary.getInstance().setLeiaTerminate(System.currentTimeMillis());
 
     }
 

@@ -34,8 +34,12 @@ public class R2D2Microservice extends MicroService {
     }
     Callback<DeactivationEvent> deactivationEventCallback=(DeactivationEvent deactivationEvent)->{
         Thread.currentThread().sleep(duration);
+        Diary.getInstance().setR2D2Deactivate(System.currentTimeMillis());
         this.complete(deactivationEvent,true);
+        Diary.getInstance().setR2D2Deactivate(System.currentTimeMillis());
     };
     Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{
-        this.terminate();};
+        this.terminate();
+       Diary.getInstance().setR2D2Terminate(System.currentTimeMillis());
+    };
 }

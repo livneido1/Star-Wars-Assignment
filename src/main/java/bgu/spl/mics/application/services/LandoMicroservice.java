@@ -35,5 +35,7 @@ public class LandoMicroservice  extends MicroService {
         Thread.currentThread().sleep(duration);
         this.complete(bombDestroyerEvent,true);
     };
-    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();};
+    Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{this.terminate();
+    Diary.getInstance().setLandoTerminate(System.currentTimeMillis());
+    };
 }
