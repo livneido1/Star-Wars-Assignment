@@ -33,7 +33,8 @@ public class Future<T> {
 
         while (!isDone)
 		{
-			wait();
+			synchronized (this){wait();}
+
 		}
         return result;
 
@@ -45,7 +46,8 @@ public class Future<T> {
      */
 	public void resolve (T result) {
 		this.result=result;
-		notifyAll();
+		synchronized (this){notifyAll();}
+
 
 	}
 	

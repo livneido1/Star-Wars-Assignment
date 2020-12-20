@@ -12,8 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Diary {
     private static Diary instance;
-    String output;
-    int totalAttacks;
+    AtomicInteger totalAttacks;
     long HanSoloFinish;
     long C3PoFinish;
     long R2D2Deactivate;
@@ -24,7 +23,7 @@ public class Diary {
     long LandoTerminate;
 
     private Diary(){
-        totalAttacks = 0;
+        totalAttacks = new AtomicInteger(0);
         HanSoloFinish=0;
         C3PoFinish=0;
         R2D2Deactivate=0;
@@ -33,7 +32,6 @@ public class Diary {
         R2D2Terminate=0;
         C3POTerminate=0;
         LandoTerminate=0;
-        output = "";
 
     }
 
@@ -79,29 +77,46 @@ public class Diary {
         R2D2Terminate = r2D2Terminate;
     }
 
-    public synchronized void setTotalAttacks() {
-        totalAttacks++;
+    public void setTotalAttacks() {
+        totalAttacks.set((totalAttacks.get() + 1));
+    }
+
+    public long getC3POTerminate() {
+        return C3POTerminate;
+    }
+
+    public long getHanSoloFinish() {
+        return HanSoloFinish;
+    }
+
+    public long getHanSoloTerminate() {
+        return HanSoloTerminate;
+    }
+
+    public long getLandoTerminate() {
+        return LandoTerminate;
+    }
+
+    public long getLeiaTerminate() {
+        return LeiaTerminate;
+    }
+
+    public long getR2D2Deactivate() {
+        return R2D2Deactivate;
+    }
+
+    public long getR2D2Terminate() {
+        return R2D2Terminate;
     }
 
     public int getTotalAttacks() {
-        return totalAttacks;
+        return totalAttacks.get();
     }
 
     public long getC3PoFinish() {
         return C3PoFinish;
     }
 
-    public String getOutput() {
-        output = "totalAttacks: " + totalAttacks +"," + "\n"+
-                "HanSoloFinish: " + HanSoloFinish + "," + "\n"+
-                "C3POFinish: " + C3PoFinish + "," + "\n"+
-                "R2D2Deactivate: " + R2D2Deactivate + "," + "\n"+
-                "LeiaTerminate: " + LeiaTerminate + "," + "\n"+
-                "HanSoloTerminate: " + HanSoloTerminate + "," + "\n"+
-                "C3POTerminate: " + C3POTerminate + "," + "\n"+
-                "R2D2Terminate: " + R2D2Terminate + "," + "\n"+
-                "LandoTerminate: " + LandoTerminate ;
-        return output;
-    }
+
 
 }

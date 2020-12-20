@@ -32,10 +32,19 @@ public class MessageQueue  {
 
     public LinkedMessage dequeue(){
         if (!isEmpty()) {
-            LinkedMessage result = last;
+           /* LinkedMessage result = last;
             last = result.getPrev();
-            last.setNext(null);
-            result.setPrev(null);
+            last.setNext(null);*/
+           LinkedMessage result=first;
+           if (first.getNext()!=null) {
+               first = first.getNext();
+               first.setPrev(null);
+           }
+           else {
+               first=null;
+               last=null;
+           }
+            result.setNext(null);
             size--;
             return result;
         }

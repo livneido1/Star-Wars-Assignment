@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.passiveObjects.LinkedMessage;
 import bgu.spl.mics.application.passiveObjects.MessageQueue;
 
 import java.util.*;
@@ -80,7 +81,8 @@ public class MessageBusImpl implements MessageBus {
 		Future<T> future =  new Future<>();
 		MessageQueue queue =  queuesMap.get(first.getClass());
 		queue.enqueue(e);
-		queue.notifyAll();
+		synchronized (queue){queue.notifyAll();}
+
 		list.add(first);
 		eventMap.put(e,future);
 		return future;
@@ -112,12 +114,14 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		MessageQueue queue = queuesMap.get(m.getClass());
-		Message message =  queue.dequeue().getMessage();
-		while (message == null){
-			queue.wait();
-			message = queue.dequeue().getMessage();
+		LinkedMessage linkedMessage =  queue.dequeue();
+		while (linkedMessage == null){
+			synchronized (queue) {
+				queue.wait();
+				linkedMessage = queue.dequeue();
+			}
 		}
-		return message;
+		return linkedMessage.getMessage();
 
 	}
 

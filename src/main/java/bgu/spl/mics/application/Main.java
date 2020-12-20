@@ -55,7 +55,7 @@ public class Main {
 
 		landoThread.start();
 		r2d2Thread.start();
-		try {
+	/*	try {
 			hanSoloThread.join();
 			c3poThread.join();
 			leiaThread.join();
@@ -63,18 +63,24 @@ public class Main {
 			landoThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		try {
-			FileWriter output = new FileWriter(args[1]);
-			json.toJson(Diary.getInstance(), output);
-			output.flush();
-			output.close();
+			FileWriter fileWriter = new FileWriter(args[1]);
+			Diary diary=Diary.getInstance();
+			Output output=new Output(diary.getTotalAttacks(),diary.getHanSoloFinish(),diary.getC3PoFinish(),
+					diary.getR2D2Deactivate(),diary.getLeiaTerminate(),diary.getHanSoloTerminate(),diary.getC3POTerminate()
+					,diary.getR2D2Terminate(),diary.getLandoTerminate());
+			json.toJson(output, fileWriter);
+			fileWriter.flush();
+			fileWriter.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("Done");
 	}
+
 
 
 
