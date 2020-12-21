@@ -39,6 +39,7 @@ public class R2D2Microservice extends MicroService {
         Diary.getInstance().setR2D2Deactivate(System.currentTimeMillis());
     };
     Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{
+
         this.terminate();
        Diary.getInstance().setR2D2Terminate(System.currentTimeMillis());
     };

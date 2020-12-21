@@ -118,6 +118,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
+        System.out.println("sending broadcast- microservice");
         MessageBusImpl messageBus=MessageBusImpl.getInstance();
     	messageBus.sendBroadcast(b);
     }
@@ -148,6 +149,7 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
+        System.out.println("terminating "+name);
         Thread.currentThread().interrupt();
     }
 

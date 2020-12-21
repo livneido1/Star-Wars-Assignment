@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Future<T> {
 	private boolean isDone;
     private T result;
+
 	
 	/**
 	 * This should be the the only public constructor in this class.
@@ -35,6 +36,7 @@ public class Future<T> {
 		{
 			synchronized (this){wait();}
 
+
 		}
         return result;
 
@@ -46,7 +48,10 @@ public class Future<T> {
      */
 	public void resolve (T result) {
 		this.result=result;
-		synchronized (this){notifyAll();}
+		isDone = true;
+
+		synchronized (this){notifyAll();
+			}
 
 
 	}

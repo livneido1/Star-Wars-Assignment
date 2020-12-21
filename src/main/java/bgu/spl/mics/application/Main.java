@@ -55,7 +55,7 @@ public class Main {
 
 		landoThread.start();
 		r2d2Thread.start();
-	/*	try {
+		try {
 			hanSoloThread.join();
 			c3poThread.join();
 			leiaThread.join();
@@ -63,7 +63,7 @@ public class Main {
 			landoThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}*/
+		}
 
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		try {
