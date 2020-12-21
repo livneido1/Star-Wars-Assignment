@@ -22,7 +22,7 @@ public class Diary {
     long C3POTerminate;
     long LandoTerminate;
 
-    private Diary(){
+    protected Diary(){
         totalAttacks = new AtomicInteger(0);
         HanSoloFinish=0;
         C3PoFinish=0;
@@ -34,6 +34,7 @@ public class Diary {
         LandoTerminate=0;
 
     }
+
 
     //TODO need to set the MicroService Finish time
 

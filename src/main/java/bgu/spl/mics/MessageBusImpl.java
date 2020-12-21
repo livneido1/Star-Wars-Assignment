@@ -135,5 +135,8 @@ public class MessageBusImpl implements MessageBus {
 		}
 		return instance;
 	}
+	//---------------------------TODO delete this
+    public static void clearBus(){ instance = new MessageBusImpl();}
+    //--------------------------
 
 }

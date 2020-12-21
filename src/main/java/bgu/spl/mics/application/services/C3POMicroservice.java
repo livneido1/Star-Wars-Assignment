@@ -38,7 +38,7 @@ public class C3POMicroservice extends MicroService {
     };
     Callback<FinishBroadcast> finishBroadcastCallback=(FinishBroadcast finish)->{
         this.terminate();
-        Diary.getInstance().setC3POTerminate(System.currentTimeMillis());//TODO: check with IDO
+        Diary.getInstance().setC3POTerminate(System.currentTimeMillis());
     };
 
 }
