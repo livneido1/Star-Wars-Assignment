@@ -64,11 +64,10 @@ public class LeiaMicroservice extends MicroService {
         }
         catch (InterruptedException e){}
         MessageBusImpl messageBus=MessageBusImpl.getInstance();
-        synchronized (messageBus) {
-            messageBus.notifyAll(); // this will release the R2D2 and C3PO from sleep.
-        }
+
         FinishBroadcast finishBroadcast= new FinishBroadcast();
         sendBroadcast(finishBroadcast);
+
         this.terminate();
         Diary.getInstance().setLeiaTerminate(System.currentTimeMillis());
 

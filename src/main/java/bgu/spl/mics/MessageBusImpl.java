@@ -47,13 +47,11 @@ public class MessageBusImpl implements MessageBus {
 		if (robinManner.containsKey(type)){
 			LinkedList<MicroService> list = robinManner.get((type));
 			list.add(m);
-			System.out.println(m.getName()+" subscribed");
 		}
 		else{
 			LinkedList<MicroService> microServiceLinkedList = new LinkedList<>();
 			microServiceLinkedList.add(m);
 			robinManner.put(type,microServiceLinkedList);
-			System.out.println(m.getName()+" subscribed");
 		}
 		if (!queuesMap.containsKey(m.getClass())){
 			MessageQueue messageQueue = new MessageQueue();
@@ -71,8 +69,9 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized void sendBroadcast(Broadcast b) {
 		LinkedList<MicroService> list =   robinManner.get(b.getClass());
 		for (MicroService microService: list){
-			queuesMap.get(microService.getClass()).enqueue(b);
-			System.out.println(microService.getClass() +"got broadcast"+ b.getClass());
+			MessageQueue queue = queuesMap.get(microService.getClass());
+			queue.enqueue(b);
+			synchronized (queue){ queue.notifyAll();};
 		}
 	}
 

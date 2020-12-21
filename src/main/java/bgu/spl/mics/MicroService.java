@@ -30,6 +30,7 @@ public abstract class MicroService implements Runnable {
 
     private String name;
     private HashMap<Class,Callback> callbackHashMap;
+    private boolean terminated;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -38,6 +39,7 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
     	this.name=name;
     	this.callbackHashMap=new HashMap<>();
+    	terminated = false;
     }
 
     /**
@@ -118,7 +120,6 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        System.out.println("sending broadcast- microservice");
         MessageBusImpl messageBus=MessageBusImpl.getInstance();
     	messageBus.sendBroadcast(b);
     }
@@ -149,8 +150,8 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
-        System.out.println("terminating "+name);
-        Thread.currentThread().interrupt();
+
+        terminated =true;
     }
 
     /**
@@ -170,16 +171,18 @@ public abstract class MicroService implements Runnable {
     	MessageBusImpl messageBus=MessageBusImpl.getInstance();
     	messageBus.register(this);
         this.initialize();
-        try {
-            Message m=messageBus.awaitMessage(this);
-            Callback callback=callbackHashMap.get(m.getClass());
-            callback.call(m);
+        while (!terminated) {
+            try {
+                Message m = messageBus.awaitMessage(this);
 
-        } catch (InterruptedException e) {
+                Callback callback = callbackHashMap.get(m.getClass());
+                callback.call(m);
 
+            } catch (InterruptedException e) {
+
+            }
         }
 
-        messageBus.unregister(this);
     }
 
 
