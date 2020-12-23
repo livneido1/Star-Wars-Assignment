@@ -11,10 +11,15 @@ import java.util.*;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
+	private static class MassageBusHolder{
+		private static MessageBusImpl instance = new MessageBusImpl();
+		}
+
+
+
 	private HashMap <Class<? extends MicroService>, MessageQueue> queuesMap; // this queue holds the messages for the Microservices
 	private HashMap<Class<? extends Message>,LinkedList<MicroService>> robinManner;
 	private HashMap<Event,Future > eventMap;
-	private static  MessageBusImpl instance ;
 
 	private MessageBusImpl(){
 		queuesMap =  new HashMap<>();
@@ -133,10 +138,8 @@ public class MessageBusImpl implements MessageBus {
 
 	public synchronized static MessageBusImpl getInstance()
 	{
-		if (instance == null){
-			instance = new MessageBusImpl();
-		}
-		return instance;
+
+		return MassageBusHolder.instance;
 	}
 
 
