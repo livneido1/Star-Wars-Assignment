@@ -11,7 +11,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
-    private static Diary instance;
+
+    private static class DiaryHolder{
+        private static Diary instance = new Diary();
+    }
+
     AtomicInteger totalAttacks;
     long HanSoloFinish;
     long C3PoFinish;
@@ -36,13 +40,10 @@ public class Diary {
     }
 
 
-    //TODO need to set the MicroService Finish time
 
     public static Diary getInstance() {
-        if (instance == null){
-            instance =  new Diary();
-        }
-        return instance;
+
+        return DiaryHolder.instance;
     }
 
     public void setC3PoFinish(long c3PoFinish) {
@@ -78,8 +79,8 @@ public class Diary {
         R2D2Terminate = r2D2Terminate;
     }
 
-    public void setTotalAttacks() {
-        totalAttacks.set((totalAttacks.get() + 1));
+    public void setTotalAttacks(int num) {
+        totalAttacks.set(num);
     }
 
     public long getC3POTerminate() {
@@ -117,7 +118,6 @@ public class Diary {
     public long getC3PoFinish() {
         return C3PoFinish;
     }
-
 
 
 }

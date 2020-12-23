@@ -78,7 +78,7 @@ public class Future<T> {
 		
         if(!isDone)
 		{
-			unit.sleep(timeout);//TODO: how to wake him up
+			unit.sleep(timeout);
 		}
         if (!isDone)
         	return null;

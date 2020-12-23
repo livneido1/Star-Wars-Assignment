@@ -49,6 +49,9 @@ public class LeiaMicroservice extends MicroService {
                 }
                 catch (InterruptedException e){}
         }
+    	Diary diary = Diary.getInstance();
+    	diary.setTotalAttacks(futures.length);
+
 
 
         DeactivationEvent deactivationEvent=new DeactivationEvent();
@@ -65,10 +68,12 @@ public class LeiaMicroservice extends MicroService {
         catch (InterruptedException e){}
         MessageBusImpl messageBus=MessageBusImpl.getInstance();
 
-        FinishBroadcast finishBroadcast= new FinishBroadcast();
-        sendBroadcast(finishBroadcast);
 
+        FinishBroadcast finishBroadcast= new FinishBroadcast();
+
+        sendBroadcast(finishBroadcast);
         this.terminate();
+
         Diary.getInstance().setLeiaTerminate(System.currentTimeMillis());
 
     }

@@ -108,7 +108,10 @@ public class MessageBusImpl implements MessageBus {
 			if (value.contains(m)){
 				value.remove(m);
 			}
+
 		}
+
+
 
 
 	}
@@ -135,8 +138,6 @@ public class MessageBusImpl implements MessageBus {
 		}
 		return instance;
 	}
-	//---------------------------TODO delete this
-    public static void clearBus(){ instance = new MessageBusImpl();}
-    //--------------------------
+
 
 }
